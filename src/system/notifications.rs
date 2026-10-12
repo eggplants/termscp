@@ -2,8 +2,9 @@
 //!
 //! This module exposes the function to send notifications to the guest OS
 
-#[cfg(all(unix, not(target_os = "macos")))]
+#[cfg(all(unix, not(any(target_os = "macos", target_os = "android"))))]
 use notify_rust::Hint;
+#[cfg(not(target_os = "android"))]
 use notify_rust::{Notification as OsNotification, Timeout};
 
 /// A notification helper which provides all the functions to send the available notifications for termscp
@@ -50,6 +51,7 @@ impl Notification {
     /// Notify guest OS with provided Summary, body and optional category
     /// e.g. Category is supported on FreeBSD/Linux only
     #[allow(unused_variables)]
+    #[cfg(not(target_os = "android"))]
     fn notify(summary: &str, body: &str, category: Option<&str>) {
         let mut notification = OsNotification::new();
         // Set common params
@@ -65,4 +67,8 @@ impl Notification {
         }
         let _ = notification.show();
     }
+
+    /// Desktop notifications are not supported on Android (no D-Bus session)
+    #[cfg(target_os = "android")]
+    fn notify(_summary: &str, _body: &str, _category: Option<&str>) {}
 }

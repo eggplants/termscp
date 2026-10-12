@@ -22,6 +22,12 @@ build_release target features="":
 build_musl target:
   dist/release/build_musl.sh {{ target }}
 
+# Build an Android release binary with cargo-ndk (requires ANDROID_NDK_HOME).
+# SMB is left out: libsmbclient is not cross-compiled for Android.
+[group('build')]
+build_android target api="24":
+  cargo ndk --target {{ target }} --platform {{ api }} build --locked --release --no-default-features --features keyring
+
 # Package an already-built Linux release as a Debian package
 [group('build')]
 package_deb target:

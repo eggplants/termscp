@@ -54,7 +54,6 @@ lazy-regex = "3"
 log = "0.4"
 md-5 = "0.11"
 notify = "8"
-notify-rust = { version = "4", default-features = false, features = ["d"] }
 nucleo = "0.5"
 open = "5"
 rand = "0.10"
@@ -87,6 +86,10 @@ wildmatch = "2"
 
 [target."cfg(any(target_os = \"linux\", target_os = \"freebsd\"))".dependencies]
 dbus-secret-service-keyring-store = { version = "1", features = ["crypto-rust", "vendored"] }
+
+[target."cfg(not(target_os = \"android\"))".dependencies]
+# Desktop notifications go through D-Bus, which is not available on Android
+notify-rust = { version = "4", default-features = false, features = ["d"] }
 
 [target."cfg(target_family = \"unix\")".dependencies]
 remotefs-ftp = { version = "1", features = ["native-tls", "native-tls-vendored"] }

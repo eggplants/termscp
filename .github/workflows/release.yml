@@ -117,6 +117,9 @@ jobs:
           - target: aarch64-unknown-linux-musl
             os: ubuntu-24.04-arm
             kind: linux
+          - target: aarch64-linux-android
+            os: ubuntu-24.04
+            kind: android
           - target: aarch64-apple-darwin
             os: macos-latest
             kind: macos
@@ -152,7 +155,7 @@ jobs:
       - name: Install just
         uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
       - name: Install Rust target
-        if: matrix.kind == 'macos'
+        if: matrix.kind == 'macos' || matrix.kind == 'android'
         run: rustup target add "$TARGET"
       - name: Install Rust target
         if: matrix.kind == 'windows'
@@ -177,6 +180,16 @@ jobs:
             echo "static deb must have no Depends, got: $depends" >&2
             exit 1
           fi
+
+      # ---- Android ----
+      - name: Install cargo-ndk (Android)
+        if: matrix.kind == 'android'
+        run: cargo install cargo-ndk --locked
+      - name: Build (Android)
+        if: matrix.kind == 'android'
+        run: |
+          echo "Using Android NDK at $ANDROID_NDK_HOME"
+          just build_android "$TARGET"
 
       # ---- macOS ----
       - name: Install deps (macOS)

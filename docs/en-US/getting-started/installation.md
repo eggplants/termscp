@@ -51,6 +51,8 @@ Official release binaries are published for these targets:
 - GNU/Linux:
   - `x86_64-unknown-linux-musl`
   - `aarch64-unknown-linux-musl`
+- Android:
+  - `aarch64-linux-android`
 - macOS:
   - `x86_64-apple-darwin`
   - `aarch64-apple-darwin`
